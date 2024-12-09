@@ -1,0 +1,84 @@
+Als je 4 switches wilt gebruiken, waarbij 2 switches specifiek zijn voor de servers en de andere 2 voor de clients, dan moet je het netwerk uitbreiden en zorgvuldig de verbindingen plannen. Hier is een plan voor de configuratie:
+
+Netwerkoverzicht
+	•	Server01: DHCP-server (10.10.0.10).
+	•	Server02: Statisch IP (10.10.0.11).
+	•	Switch01 en Switch02: Voor de servers, verbonden via glasvezel.
+	•	Switch03 en Switch04: Voor de clients, verbonden met de server-switches (Switch01 en Switch02).
+	•	Clients: Verbind de clients met Switch03 en Switch04.
+	•	Server01 moet DHCP toewijzen aan alle clients via de switches.
+
+Configuratieplan
+
+1. Apparatuur toevoegen
+	1.	Servers:
+	•	Voeg Server01 en Server02 toe.
+	2.	Switches:
+	•	Voeg 4 switches toe: Switch01, Switch02, Switch03, en Switch04.
+	3.	Clients:
+	•	Voeg meerdere PC-clients toe.
+
+2. Netwerk verbinden
+	1.	Server-switches:
+	•	Verbind Server01 met Switch01 via een Copper Straight-Through-kabel (bijvoorbeeld Fa0/1).
+	•	Verbind Server02 met Switch02 via een Copper Straight-Through-kabel (bijvoorbeeld Fa0/1).
+	•	Verbind Switch01 en Switch02 met elkaar via een Fiber-optic-kabel (bijvoorbeeld tussen Gi0/1 en Gi0/1).
+	2.	Client-switches:
+	•	Verbind Switch03 en Switch01 via een Copper Straight-Through-kabel (bijvoorbeeld tussen Fa0/24 op Switch03 en Fa0/24 op Switch01).
+	•	Verbind Switch04 en Switch02 via een Copper Straight-Through-kabel (bijvoorbeeld tussen Fa0/24 op Switch04 en Fa0/24 op Switch02).
+	3.	Clients:
+	•	Verbind clients met Switch03 en Switch04 via Copper Straight-Through-kabels.
+
+3. Server01 configureren als DHCP-server
+	1.	Server01:
+	•	IP Configuration:
+	•	Static IP: 10.10.0.10.
+	•	Subnet Mask: 255.255.255.0.
+	•	Default Gateway: 10.10.0.1.
+	•	Services-tabblad:
+	•	Schakel de DHCP-service in.
+	•	Configureer de DHCP-pool:
+	•	Start IP: 10.10.0.100.
+	•	Subnet Mask: 255.255.255.0.
+	•	Default Gateway: 10.10.0.1.
+	•	DNS Server: 10.10.0.10.
+	•	Max Users: Stel een limiet in, bijvoorbeeld 100.
+
+4. Server02 configureren
+	1.	Server02:
+	•	IP Configuration:
+	•	Static IP: 10.10.0.11.
+	•	Subnet Mask: 255.255.255.0.
+	•	Default Gateway: 10.10.0.1.
+
+5. Switches configureren
+	1.	Server-switches (Switch01 en Switch02):
+	•	Verbind deze switches via een Fiber-optic-kabel.
+	•	Zorg ervoor dat beide switches volledig in hetzelfde VLAN werken (standaard is VLAN 1).
+	2.	Client-switches (Switch03 en Switch04):
+	•	Verbind deze switches met Switch01 en Switch02 via Copper-kabels.
+	•	Zorg ervoor dat ook deze switches in hetzelfde VLAN werken.
+
+6. Clients configureren
+	1.	Stel de IP-instellingen van alle clients in op DHCP:
+	•	Open Desktop > IP Configuration en selecteer DHCP.
+	•	De clients moeten een IP-adres ontvangen van Server01 in het bereik 10.10.0.100 - 10.10.0.200.
+
+7. Test de configuratie
+	1.	Gebruik Command Prompt op de clients:
+	•	Controleer het IP-adres met ipconfig.
+	•	Voer een ping 10.10.0.10 (Server01) en ping 10.10.0.11 (Server02) uit.
+	2.	Controleer of DHCP-adressen correct worden toegewezen, ongeacht of de client is verbonden met Switch03 of Switch04.
+	3.	Controleer de verbinding tussen de switches met het CLI-commando show ip interface brief op elke switch.
+
+Netwerkdiagram
+
+[Server01 (10.10.0.10)] -- Switch01 --Fiber--> Switch02 <-- [Server02 (10.10.0.11)]
+                              |                             |
+                        Copper |                       Copper |
+                              v                             v
+                         [Switch03]                     [Switch04]
+                              |                             |
+                          [Clients]                    [Clients]
+
+Met deze configuratie is je netwerk volledig verbonden via vier switches. Server01 beheert de DHCP-verdeling voor alle clients, terwijl Server02 als extra server fungeert. Laat weten als je hulp nodig hebt bij specifieke configuraties of VLAN-instellingen!
